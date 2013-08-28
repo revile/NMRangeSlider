@@ -65,6 +65,8 @@
     
     _lowerValue = 0.0;
     _upperValue = 1.0;
+    
+    _horizontalPadding = 0.0;
 }
 
 // ------------------------------------------------------------------------------------------------------
@@ -247,7 +249,7 @@
 //The return value is automatically adjust to fit inside the valid range
 -(float) lowerValueForCenterX:(float)x
 {
-    float _padding = _lowerHandle.frame.size.width/2.0f;
+    float _padding = _lowerHandle.frame.size.width/2.0f + self.horizontalPadding;
     float value = _minimumValue + (x-_padding) / (self.frame.size.width-(_padding*2)) * (_maximumValue - _minimumValue);
     
     value = MAX(value, _minimumValue);
@@ -260,7 +262,7 @@
 //The return value is automatically adjust to fit inside the valid range
 -(float) upperValueForCenterX:(float)x
 {
-    float _padding = _upperHandle.frame.size.width/2.0;
+    float _padding = _upperHandle.frame.size.width/2.0 + self.horizontalPadding;
     
     float value = _minimumValue + (x-_padding) / (self.frame.size.width-(_padding*2)) * (_maximumValue - _minimumValue);
     
@@ -281,9 +283,9 @@
     {
         retValue.size.height=self.bounds.size.height;
     }
-
-    float xLowerValue = ((self.bounds.size.width - _lowerHandle.frame.size.width) * (_lowerValue - _minimumValue) / (_maximumValue - _minimumValue))+(_lowerHandle.frame.size.width/2.0f);
-    float xUpperValue = ((self.bounds.size.width - _upperHandle.frame.size.width) * (_upperValue - _minimumValue) / (_maximumValue - _minimumValue))+(_upperHandle.frame.size.width/2.0f);
+    
+    float xLowerValue = ((self.bounds.size.width - (2 * self.horizontalPadding) - _lowerHandle.frame.size.width) * (_lowerValue - _minimumValue) / (_maximumValue - _minimumValue))+(_lowerHandle.frame.size.width/2.0f) + self.horizontalPadding;
+    float xUpperValue = ((self.bounds.size.width - (2 * self.horizontalPadding) - _upperHandle.frame.size.width) * (_upperValue - _minimumValue) / (_maximumValue - _minimumValue))+(_upperHandle.frame.size.width/2.0f) + self.horizontalPadding;
     
     retValue.origin = CGPointMake(xLowerValue, (self.bounds.size.height/2.0f) - (retValue.size.height/2.0f));
     retValue.size.width = xUpperValue-xLowerValue;
@@ -292,11 +294,11 @@
 }
 
 //returns the rect for the background image
- -(CGRect) trackBackgroundRect
+-(CGRect) trackBackgroundRect
 {
     CGRect trackBackgroundRect;
     
-    trackBackgroundRect.size = CGSizeMake(_trackBackgroundImage.size.width-4, _trackBackgroundImage.size.height);
+    trackBackgroundRect.size = CGSizeMake(_trackBackgroundImage.size.width, _trackBackgroundImage.size.height);
     
     if(_trackBackgroundImage.capInsets.top || _trackBackgroundImage.capInsets.bottom)
     {
@@ -305,10 +307,10 @@
     
     if(_trackBackgroundImage.capInsets.left || _trackBackgroundImage.capInsets.right)
     {
-        trackBackgroundRect.size.width=self.bounds.size.width-4;
+        trackBackgroundRect.size.width=self.bounds.size.width-4-(2*self.horizontalPadding);
     }
     
-    trackBackgroundRect.origin = CGPointMake(2, (self.bounds.size.height/2.0f) - (trackBackgroundRect.size.height/2.0f));
+    trackBackgroundRect.origin = CGPointMake(2 + self.horizontalPadding, (self.bounds.size.height/2.0f) - (trackBackgroundRect.size.height/2.0f));
     
     return trackBackgroundRect;
 }
@@ -326,7 +328,7 @@
         thumbRect.size.height=self.bounds.size.height;
     }
     
-    float xValue = ((self.bounds.size.width-thumbRect.size.width)*((value - _minimumValue) / (_maximumValue - _minimumValue)));
+    float xValue = ((self.bounds.size.width-(2 * self.horizontalPadding)-thumbRect.size.width)*((value - _minimumValue) / (_maximumValue - _minimumValue))) + self.horizontalPadding;
     thumbRect.origin = CGPointMake(xValue, (self.bounds.size.height/2.0f) - (thumbRect.size.height/2.0f));
     
     return CGRectIntegral(thumbRect);

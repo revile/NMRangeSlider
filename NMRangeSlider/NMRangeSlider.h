@@ -43,6 +43,9 @@
 // center location for the upper handle control
 @property(readonly, nonatomic) CGPoint upperCenter;
 
+// padding that will be applied to both the left and right sides of the slider
+// default 0.0 (none)
+@property (assign, nonatomic) float horizontalPadding;
 
 // Images, these should be set before the control is displayed.
 // If they are not set, then the default images are used.
