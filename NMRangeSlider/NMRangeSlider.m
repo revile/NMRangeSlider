@@ -51,6 +51,15 @@
     return self;
 }
 
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    if (CGRectContainsPoint(CGRectInset(self.lowerHandle.frame, -20, -20), point) || CGRectContainsPoint(CGRectInset(self.upperHandle.frame, -20, -20), point)) {
+        return self;
+    }
+    else {
+        return nil;
+    }
+}
+
 
 - (void) configureView
 {
@@ -109,12 +118,12 @@
     {
         value = roundf(value / _stepValueInternal) * _stepValueInternal;
     }
-
+    
     value = MIN(value, _maximumValue);
     value = MAX(value, _lowerValue+_minimumRange);
     
     _upperValue = value;
-
+    
     [self setNeedsLayout];
 }
 
@@ -157,7 +166,7 @@
     {
         setValuesBlock();
     }
-
+    
 }
 
 - (void)setLowerValue:(float)lowerValue animated:(BOOL) animated
@@ -289,7 +298,7 @@
     
     retValue.origin = CGPointMake(xLowerValue, (self.bounds.size.height/2.0f) - (retValue.size.height/2.0f));
     retValue.size.width = xUpperValue-xLowerValue;
-
+    
     return retValue;
 }
 
@@ -320,7 +329,7 @@
 {
     CGRect thumbRect;
     UIEdgeInsets insets = thumbImage.capInsets;
-
+    
     thumbRect.size = CGSizeMake(thumbImage.size.width, thumbImage.size.height);
     
     if(insets.top || insets.bottom)
@@ -332,7 +341,7 @@
     thumbRect.origin = CGPointMake(xValue, (self.bounds.size.height/2.0f) - (thumbRect.size.height/2.0f));
     
     return CGRectIntegral(thumbRect);
-
+    
 }
 
 // ------------------------------------------------------------------------------------------------------
@@ -377,17 +386,17 @@
         _haveAddedSubviews=YES;
         [self addSubviews];
     }
-
-
+    
+    
     self.trackBackground.frame = [self trackBackgroundRect];
     self.track.frame = [self trackRect];
     self.lowerHandle.frame = [self thumbRectForValue:_lowerValue image:self.lowerHandleImageNormal];
-    self.upperHandle.frame = [self thumbRectForValue:_upperValue image:self.upperHandleImageNormal];
+    self.upperHandle.frame = [self thumbRectForValue:_upperValue image:self.upperHandleImageNormal];    
 }
 
 - (CGSize)intrinsicContentSize
 {
-   return CGSizeMake(UIViewNoIntrinsicMetric, MAX(self.lowerHandleImageNormal.size.height, self.upperHandleImageNormal.size.height));
+    return CGSizeMake(UIViewNoIntrinsicMetric, MAX(self.lowerHandleImageNormal.size.height, self.upperHandleImageNormal.size.height));
 }
 
 // ------------------------------------------------------------------------------------------------------
@@ -399,9 +408,9 @@
 // TODO: Do it the correct way. I think wwdc 2012 had a video on it...
 - (CGRect) touchRectForHandle:(UIImageView*) handleImageView
 {
-    float xPadding = 5;
-    float yPadding = 5; //(self.bounds.size.height-touchRect.size.height)/2.0f
-
+    float xPadding = 20;
+    float yPadding = 20; //(self.bounds.size.height-touchRect.size.height)/2.0f
+    
     // expands rect by xPadding in both x-directions, and by yPadding in both y-directions
     CGRect touchRect = CGRectInset(handleImageView.frame, -xPadding, -yPadding);;
     return touchRect;
@@ -465,7 +474,7 @@
     if(_upperHandle.highlighted )
     {
         float newValue = [self upperValueForCenterX:(touchPoint.x - _upperTouchOffset)];
-
+        
         //if both upper and lower is selected, then the new value must be HIGHER
         //otherwise the touch event is ignored.
         if(!_lowerHandle.highlighted || newValue>_upperValue)
@@ -479,7 +488,7 @@
             _upperHandle.highlighted=NO;
         }
     }
-     
+    
     
     //send the control event
     if(_continuous)
@@ -489,7 +498,7 @@
     
     //redraw
     [self setNeedsLayout];
-
+    
     return YES;
 }
 
