@@ -518,6 +518,7 @@
     }
     
     [self sendActionsForControlEvents:UIControlEventValueChanged];
+    [self sendActionsForControlEvents:UIControlEventEditingDidEnd];
 }
 
 @end
